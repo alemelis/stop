@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+    <head>
+        <title>simple top</title>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/terminal.css@0.7.2/dist/terminal.min.css"
+        />
+        <style>
+            body {
+                background: #222225;
+                color: #e8e9ed;
+                font-family: monospace;
+                margin: 10px 10px;
+            }
+            .terminal h1 {
+                color: #e8e9ed;
+            }
+            .cpu-line {
+                white-space: pre;
+                background: #222225;
+                color: #e8e9ed;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="terminal">
+            <div id="hostname"></div>
+            <div id="cpus"></div>
+            <div id="mem"></div>
+            <div id="swap"></div>
+            <div id="disk"></div>
+        </div>
+
+        <script>
+            function drawBar(percent, width = 30) {
+                const filled = Math.round((percent / 100) * width);
+                return "█".repeat(filled) + "&nbsp;".repeat(width - filled);
+            }
+
+            async function update() {
+                const res = await fetch("/api/stats");
+                const data = await res.json();
+
+                const hostname = data.hostname;
+                document.getElementById("hostname").innerHTML =
+                    `<h1>${hostname}</h1>`;
+                const cpus = data.cpu
+                    .map(
+                        (p, i) =>
+                            `CPU${"&nbsp;" + i.toString().padStart(2)} [${drawBar(p)}] ${p.toFixed(1)}%`,
+                    )
+                    .join("\n");
+                document.getElementById("cpus").innerHTML =
+                    `<p class="cpu-line">${cpus}</p>`;
+
+                document.getElementById("mem").innerHTML =
+                    `<p>RAM &nbsp;&nbsp;&nbsp;[${drawBar(data.mem)}] ${data.mem.toFixed(1)}%</p>`;
+
+                document.getElementById("swap").innerHTML =
+                    `<p>SWAP &nbsp;&nbsp;[${drawBar(data.swap)}] ${data.swap.toFixed(1)}%</p>`;
+
+                document.getElementById("disk").innerHTML =
+                    `<p>DISK &nbsp;&nbsp;[${drawBar(data.disk)}] ${data.disk.toFixed(1)}%</p>`;
+            }
+
+            setInterval(update, 2000);
+            update();
+        </script>
+    </body>
+</html>

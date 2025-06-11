@@ -1,0 +1,6 @@
+.rsyncignore
+deploy_*
+*.service
+.venv
+.ruff_cache
+__pycache__
