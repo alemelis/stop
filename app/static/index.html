@@ -25,7 +25,7 @@
     </head>
     <body>
         <div class="terminal">
-            <div id="hostname"></div>
+            <h1>System Stats</h1>
             <div id="cpus"></div>
             <div id="mem"></div>
             <div id="swap"></div>
@@ -42,9 +42,6 @@
                 const res = await fetch("/api/stats");
                 const data = await res.json();
 
-                const hostname = data.hostname;
-                document.getElementById("hostname").innerHTML =
-                    `<h1>${hostname}</h1>`;
                 const cpus = data.cpu
                     .map(
                         (p, i) =>

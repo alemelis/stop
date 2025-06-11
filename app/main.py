@@ -26,7 +26,6 @@ def get_stats():
     disk = psutil.disk_usage("/")
     return JSONResponse(
         content={
-            "hostname": os.uname().nodename,
             "cpu": cpu_percents,
             "mem": mem.percent,
             "swap": swap.percent,
